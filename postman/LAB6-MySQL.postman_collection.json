@@ -1,0 +1,94 @@
+{
+  "info": {
+    "name": "LAB6 - API produits MySQL",
+    "description": "Lancer MySQL et l'API avant d'envoyer les requetes dans l'ordre. La suppression de la categorie liee doit renvoyer 409.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "categoryId", "value": "" },
+    { "key": "productId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. Lister les categories",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/categories" },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Statut 200', () => pm.response.to.have.status(200));"] } }]
+    },
+    {
+      "name": "2. Creer une categorie",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"name\":\"Categorie {{$timestamp}}\"}" },
+        "url": "{{baseUrl}}/api/categories"
+      },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Statut 201', () => pm.response.to.have.status(201));", "if (pm.response.code === 201) pm.collectionVariables.set('categoryId', pm.response.json().id);"] } }]
+    },
+    {
+      "name": "3. Creer un produit",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"name\":\"Casque audio\",\"price\":59.99,\"category_id\":{{categoryId}}}" },
+        "url": "{{baseUrl}}/api/products"
+      },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Statut 201', () => pm.response.to.have.status(201));", "if (pm.response.code === 201) pm.collectionVariables.set('productId', pm.response.json().id);"] } }]
+    },
+    {
+      "name": "4. Lire le produit",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/products/{{productId}}" },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Statut 200', () => pm.response.to.have.status(200));"] } }]
+    },
+    {
+      "name": "5. Rechercher et paginer",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/products/search?name=Casque&minPrice=0&maxPrice=100&limit=10&offset=0&sort=price" },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Statut 200', () => pm.response.to.have.status(200));"] } }]
+    },
+    {
+      "name": "6. Modifier le produit",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"name\":\"Casque audio pro\",\"price\":79.99,\"category_id\":{{categoryId}}}" },
+        "url": "{{baseUrl}}/api/products/{{productId}}"
+      },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Statut 200', () => pm.response.to.have.status(200));"] } }]
+    },
+    {
+      "name": "7. Refuser suppression categorie liee",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/api/categories/{{categoryId}}" },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Conflit attendu', () => pm.response.to.have.status(409));"] } }]
+    },
+    {
+      "name": "8. Creer produit et categorie en transaction",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"name\":\"Clavier\",\"price\":49.99,\"categoryName\":\"Accessoires\"}" },
+        "url": "{{baseUrl}}/api/products/with-category"
+      },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Statut 201', () => pm.response.to.have.status(201));"] } }]
+    },
+    {
+      "name": "9. Refuser donnees invalides",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"name\":\"X\",\"price\":-1}" },
+        "url": "{{baseUrl}}/api/products"
+      },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Statut 400', () => pm.response.to.have.status(400));"] } }]
+    },
+    {
+      "name": "10. Supprimer le produit",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/api/products/{{productId}}" },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Statut 204', () => pm.response.to.have.status(204));"] } }]
+    },
+    {
+      "name": "11. Supprimer la categorie",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/api/categories/{{categoryId}}" },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Statut 204', () => pm.response.to.have.status(204));"] } }]
+    }
+  ]
+}
