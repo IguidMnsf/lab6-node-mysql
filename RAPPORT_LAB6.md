@@ -26,9 +26,7 @@ La création avec catégorie utilise une transaction : validation atomique par `
 4. Implémentation de la transaction et de la validation des données.
 5. Exécution de scénarios Postman et publication du code sur GitHub.
 
-Les étapes ci-dessus décrivent la méthode prévue. Compléter ci-dessous uniquement après leur réalisation effective.
-
-Lors de la préparation du projet, six tests automatisés avec accès MySQL simulés ont réussi. La connexion à une instance MySQL réelle et les scénarios Postman restent à vérifier localement.
+Lors de la préparation du projet, six tests automatisés avec accès MySQL simulés ont réussi. Une démonstration ultérieure a utilisé MySQL local : une création de produit et une création transactionnelle ont renvoyé `201` dans Postman.
 
 ## Résultats à compléter
 
@@ -36,16 +34,30 @@ Lors de la préparation du projet, six tests automatisés avec accès MySQL simu
 |---|---|
 | Tables et données dans MySQL Workbench | À compléter |
 | Démarrage local de l'API | À compléter |
-| Liste et création de produits (`200`, `201`) | À compléter |
+| Liste et création de produits (`200`, `201`) | `200` observé en terminal ; création `201` dans Postman |
 | Recherche et pagination (`200`) | À compléter |
 | Données invalides (`400`) | À compléter |
 | Catégorie liée (`409`) et suppression (`204`) | À compléter |
-| Création transactionnelle (`201`) | À compléter |
+| Création transactionnelle (`201`) | `201` observé dans Postman |
 | Page du dépôt GitHub et README | À compléter |
 
 **Lien GitHub :** https://github.com/IguidMnsf/lab6-node-mysql
 
 **Difficultés rencontrées et solutions :** à compléter.
+
+## Captures des exécutions
+
+**Création d'un produit dans Postman — HTTP 201 :**
+
+![Création d'un produit dans Postman](captures-rapport/05-postman-creation.png)
+
+**Création transactionnelle d'un produit et de sa catégorie — HTTP 201 :**
+
+![Création transactionnelle dans Postman](captures-rapport/06-postman-transaction.png)
+
+**Tests automatisés avec base simulée — `npm test` :**
+
+![Résultat des tests Node.js](captures-rapport/03-terminal-npm-test.png)
 
 ## Conclusion
 
